@@ -126,4 +126,5 @@ body {
 #chat-container {
   display: flex;
   flex-direction: column;
+  margin-top: 2rem;
 }
