@@ -1,14 +1,19 @@
 import { collection, orderBy, query, limit, onSnapshot } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import { useEffect, useState}  from "react"
 import { auth, db } from "../config/firebaseConfig"
 import ChatSelect from "./ChatSelect"
 import MyChat from "./MyChat"
 import OtherChat from "./OtherChat"
+import {useNavigate} from "react-router-dom"
 
 export default function Application() {
     const [messages, setMessages] = useState<{owner?: string, text?: string, createdAt?: string}[]>([{owner: "", text: "", createdAt: ""}]);
+    const navigate = useNavigate()
     const user = auth.currentUser;
-
+    if(user == null) {
+        navigate("/login");
+    }
+    console.log(user?.photoURL);
     useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("createdAt"), limit(100));
         const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -25,17 +30,15 @@ export default function Application() {
         <div id="app-container">
             <div id="left-bar-chat">
                 <div id="profile-container">
-                    <div className="profile-img"></div>
+                    <img className="profile-img" src={user?.photoURL || ""}/>
                     <div>
-                        <p style={{fontWeight: "bold"}}>Fname Lname</p>
-                        <p style={{fontSize: "0.8rem"}}>email@domain.com</p>
+                        <p style={{fontWeight: "bold"}}>{user?.displayName}</p>
+                        <p style={{fontSize: "0.8rem"}}>{user?.email}</p>
                     </div>
                 </div>
                     <input type="text" id="search-user-input" placeholder="Search for a user..."/>
                     <div id="chat-select-container">
-                        <h4 style={{marginBottom: "1rem"}}>Nothing here yet...</h4>
-                        <p>Start chatting with someone by searching for their username!</p>
-                        {/* <ChatSelect/> */}
+                        <ChatSelect/>
                     </div>
             </div>
             <div id="chat">

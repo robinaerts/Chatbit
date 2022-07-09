@@ -128,3 +128,7 @@ body {
   flex-direction: column;
   margin-top: 2rem;
 }
+
+.select {
+  background-color: #B7B7B7;
+}
